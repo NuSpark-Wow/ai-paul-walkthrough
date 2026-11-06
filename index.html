@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walk Through It With Paul</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrated "studio" card — photo + live counter left, the step being spoken right, a 20-node workflow rail that lights up as you go */
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#132030; --muted:#5A6878; --line:#D6DCE3;
+  --spark:#D9541E; --spark-soft:#F9E3D8; --done:#1F6F5C; --done-soft:#DCEFE8;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E151E; --surface:#16202C; --ink:#E8EDF2; --muted:#9AA8B7; --line:#2A3746;
+  --spark:#F07A45; --spark-soft:#3A2418; --done:#5CC3A4; --done-soft:#173129; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151E; --surface:#16202C; --ink:#E8EDF2; --muted:#9AA8B7; --line:#2A3746;
+  --spark:#F07A45; --spark-soft:#3A2418; --done:#5CC3A4; --done-soft:#173129; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 40px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:18px}
+
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:14px}
+.brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,42px);line-height:1.05;margin:4px 0 0;text-wrap:balance;letter-spacing:-.01em}
+.paths{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.paths button{font:600 15px var(--body);border:0;background:transparent;color:var(--muted);padding:9px 16px;border-radius:999px;cursor:pointer}
+.paths button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.paths button:focus-visible,.ctl:focus-visible,.node:focus-visible,.cta a:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+
+.studio{background:var(--surface);border:1px solid var(--line);border-radius:18px;display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);overflow:hidden}
+.side{background:var(--ink);color:var(--bg);padding:22px;display:grid;gap:16px;align-content:start}
+.photo{position:relative;aspect-ratio:1/1;max-width:100%;border-radius:12px;overflow:hidden;background:#1d2a38}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s}
+.live{position:absolute;left:10px;bottom:10px;display:flex;align-items:center;gap:8px;background:rgba(10,16,24,.78);color:#fff;
+  font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px}
+.bars{display:flex;gap:2px;align-items:end;height:12px}
+.bars i{width:3px;background:var(--spark);height:4px;border-radius:2px}
+.speaking .bars i{animation:eq .9s ease-in-out infinite}
+.speaking .bars i:nth-child(2){animation-delay:.15s}.speaking .bars i:nth-child(3){animation-delay:.3s}.speaking .bars i:nth-child(4){animation-delay:.45s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.count{font-family:var(--mono);display:grid;gap:2px}
+.count b{font-size:64px;line-height:.9;font-weight:700;color:var(--spark);font-variant-numeric:tabular-nums}
+.count span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.who{font-size:14px;opacity:.8;line-height:1.4}
+
+.main{padding:26px 28px;display:grid;gap:18px;align-content:start;min-width:0}
+.kicker{font:700 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--spark)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.2vw,34px);line-height:1.1;margin:0;text-wrap:balance}
+.line{font-size:18px;color:var(--muted);margin:0}
+.say{border-left:3px solid var(--line);padding-left:14px;color:var(--ink);font-size:16px;max-width:62ch;margin:0}
+details summary{cursor:pointer;font:600 14px var(--body);color:var(--muted);width:max-content}
+details[open] summary{margin-bottom:10px}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ctl{font:600 16px var(--body);border-radius:10px;padding:12px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:inline-flex;align-items:center;gap:8px}
+.ctl.primary{background:var(--spark);border-color:var(--spark);color:#fff}
+.ctl[disabled]{opacity:.4;cursor:default}
+.hint{font-size:13px;color:var(--muted)}
+.audio-note{font-size:13px;color:var(--muted);background:var(--bg);border-radius:8px;padding:8px 12px}
+
+.rail{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:4px;align-items:center}
+.node{height:10px;border:0;border-radius:3px;background:var(--line);cursor:pointer;padding:0}
+.node.done{background:var(--done)}
+.node.now{background:var(--spark);height:16px}
+.railcap{display:flex;justify-content:space-between;font:500 12px var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.cta a{font:600 16px var(--body);text-decoration:none;border-radius:10px;padding:12px 18px}
+.cta a.book{background:var(--spark);color:#fff}
+.cta a.ask{border:1px solid var(--ink);color:var(--ink)}
+.note{font-size:13px;color:var(--muted);text-align:center;margin:0}
+
+@media (max-width:720px){
+  .studio{grid-template-columns:1fr}
+  .side{grid-template-columns:120px 1fr;align-items:center}
+  .count b{font-size:46px}
+  .who{grid-column:1/-1}
+  .main{padding:22px 18px}
+  .rail{gap:2px}
+}
+@media (prefers-reduced-motion:reduce){.speaking .bars i{animation:none;height:8px}.photo img{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">NuSpark Marketing · AI Paul</div>
+      <h1 id="title">Walk through it with Paul</h1>
+    </div>
+    <div class="paths" role="group" aria-label="Choose a program">
+      <button id="p-paid" aria-pressed="true" data-path="paid">Paid Media</button>
+      <button id="p-gtm" aria-pressed="false" data-path="gtm">GTM Outbound</button>
+    </div>
+  </header>
+
+  <section class="studio" id="studio">
+    <aside class="side">
+      <div class="photo"><img id="photo" alt="Paul Mosenson, founder of NuSpark Marketing" src="paid-1.jpg"><div class="live"><span class="bars"><i></i><i></i><i></i><i></i></span><span id="livelbl">AI Paul</span></div></div>
+      <div class="count"><b id="num">20</b><span id="numlbl">steps ahead</span></div>
+      <div class="who">Narrated by AI Paul, in Paul Mosenson's own cloned voice.</div>
+    </aside>
+
+    <div class="main">
+      <div class="kicker" id="kicker">Introduction</div>
+      <h2 id="stepTitle"></h2>
+      <p class="line" id="stepLine"></p>
+      <details id="readalong"><summary>Read along</summary><p class="say" id="say"></p></details>
+      <div class="audio-note" id="audioNote" hidden>Narration for this step is on its way. Read along above for now.</div>
+
+      <div class="controls">
+        <button class="ctl" id="back">← Back</button>
+        <button class="ctl" id="play">▶ Play</button>
+        <button class="ctl primary" id="next">Start →</button>
+      </div>
+      <div class="hint">Tip: use the arrow keys to move, or the space bar to play and pause.</div>
+
+      <div class="cta" id="cta" hidden>
+        <a class="book" id="bookLink" href="https://calendly.com/pmosenson/30-minute-meeting-nuspark?utm_source=ai-paul-walkthrough&amp;utm_medium=widget" target="_blank" rel="noopener">Book a 30-minute call</a>
+        <a class="ask" id="askLink" href="https://nusparkmarketing.com/contact/?utm_source=ai-paul-walkthrough&amp;utm_medium=widget" target="_blank" rel="noopener">Contact Paul with a question</a>
+      </div>
+
+      <div>
+        <div class="rail" id="rail" aria-label="Steps"></div>
+        <div class="railcap"><span>Step 1</span><span id="railmid"></span><span>Step 20</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">Sample program. Every step is adjusted to the plan we agree on.</p>
+</div>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+const DATA = {"paid": {"label": "Paid Media", "title": "Paid Media Lead Generation", "sub": "20 steps from plan to pipeline", "photos": ["paid-1.jpg", "paid-2.jpg"], "intro": {"card": "Paid Media Lead Generation — 20 steps from plan to pipeline", "say": "Hi, I'm Paul Mosenson, founder of NuSpark Marketing. Most people think paid media ends when a lead comes in. It doesn't. That's where the real work starts. I'm going to walk you through every step of a paid media lead generation program the way I run it: decades of media experience, with Claude and the AI tools I've built working inside every step. Twenty steps, built around multiple ebooks, each written for a specific audience and the problem they're trying to solve. This is a sample program. Every step gets adjusted to the plan we agree on together. Click next whenever you're ready."}, "steps": [{"t": "Plan approved", "l": "Budget, audience, goals, KPIs", "say": "Everything starts with an approved plan. We agree on budget, who we're trying to reach, what success looks like, and how we'll measure it, including how each ad platform gets credit for a lead."}, {"t": "Sales alignment", "l": "What counts as a sales-ready lead", "say": "Before a single ad runs, I sit down with your sales team. What makes a lead worth their time? How fast will they follow up? What do they need to know before they call? This is the step most programs skip, and it's why marketing and sales end up pointing fingers. We agree on the rules first."}, {"t": "Website audit", "l": "Conversion, proof and trust", "say": "Before we spend a dollar on media, we look at your website. Ads and ebooks bring people in, but your site is where they decide whether to trust you. With Claude and my AI tools, we audit every key page for conversion, proof and trust: clear offers, case studies, testimonials, and easy next steps. Then we fix what's holding it back, so every dollar we spend later works harder."}, {"t": "Tracking setup", "l": "Pixels, conversions, UTMs, CRM fields", "say": "Now we wire up tracking. Every ad platform gets its pixel and conversion events. Every link gets tagged so we know exactly where each lead came from. And the lead database gets fields to capture the source and the offer each lead responded to. If we can't measure it, we can't improve it. So this happens before launch, not after."}, {"t": "Ebook library", "l": "One for each audience and pain point", "say": "Here's where we're different. Most programs run one offer for everybody. We build a library of ebooks, each written for a specific audience and the specific problem they're trying to solve. Claude and my AI tools research each audience and draft the content fast, and I shape every one so it sounds like your company, not a machine. More relevant offers, in a fraction of the usual time."}, {"t": "Audience build", "l": "Each audience matched to its ebook", "say": "Next, we build the audiences on each ad platform, by industry, title, company size and interests. Then each audience gets paired with the ebook written for them. We tighten the targeting so the budget reaches the people most likely to care, not everyone with a job title."}, {"t": "Landing pages", "l": "One per ebook, instant delivery", "say": "Every ebook gets its own landing page. The message on the page matches the ad they just clicked, so there's no disconnect. The form stays short, because every extra field costs you leads. And the ebook is delivered instantly. When someone raises their hand, you don't make them wait."}, {"t": "Creative and copy", "l": "Written per ebook and audience", "say": "Now the ads themselves. With AI, we produce headline and copy variations for every ebook and every audience. Then my years as a media buyer and direct response marketer decide which ones run and how they're tested against each other. AI brings the volume. Experience brings the judgment. The ad has one job: earn the click from the right person."}, {"t": "Campaign build", "l": "Structure, budgets, bidding, timing", "say": "Then we build the campaigns. How they're structured, how budget is split across platforms and audiences, how we bid, and when ads run. A smart structure here makes optimization faster later, because we can see exactly what's working and move money to it."}, {"t": "QA", "l": "Every path tested end to end", "say": "Before launch, we test everything. We submit real test leads through every ad, every landing page and every form, and confirm they land in the lead database with the right source and the right ebook attached. It's not glamorous. But one broken form can quietly waste a month of budget."}, {"t": "Launch", "l": "Campaigns go live", "say": "Now we launch. Halfway through, and this is the step most people think of as the whole job. As you're about to see, it's really the midpoint."}, {"t": "Initial observation", "l": "Watch closely, don't overreact", "say": "Right after launch comes initial observation, while the ad platforms learn who responds. This is where a lot of programs go wrong. Someone panics after a few days and changes everything, and the platforms start over. We watch closely, fix anything that's actually broken, and let the data build before we make big moves."}, {"t": "Lead capture", "l": "Every lead tagged with its ebook", "say": "Leads start coming in. Each one is captured in a lead database with where it came from and which ebook they downloaded, so you already know the problem they care about. They don't go into your CRM yet, unless you want them there. An ebook download isn't a request to talk to sales, so these leads go into scoring and nurture first. The ones who respond to a bottom-funnel offer, like an assessment or a consultation, are different. They go straight to sales."}, {"t": "Lead scoring", "l": "Fit and interest, ranked", "say": "Not every lead is ready to talk. So every lead gets scored, using a scoring model built with Claude and set up together with you. Does this company and this person fit your ideal customer? Which ebook did they choose? Did they come back for a second one? Did they visit your pricing page? The score tells us who's ready for sales and who needs more time."}, {"t": "Nurture", "l": "A follow-up track for each ebook", "say": "Most leads aren't ready on day one, and that's normal. Each ebook gets its own follow-up track, written with AI and reviewed by me, that continues the conversation on that same problem and moves toward a next step. And when someone's engaging but not quite ready, they move to a faster track designed to get them over the line."}, {"t": "Retargeting", "l": "Stay visible to people who showed interest", "say": "While nurture works the inbox, retargeting keeps you in front of the people who visited, engaged or watched but didn't download yet. It's some of the most efficient money in the budget, because you're spending on people who already know who you are."}, {"t": "Hand-off to sales", "l": "Notified, with full context", "say": "When a lead hits the score we agreed on back in step two, the lead moves into your CRM and sales gets notified right away. And they don't just get a name and an email. They get which ebook, what the prospect engaged with, and why they're ready. Your salesperson walks into the first call already knowing the problem. That changes the whole conversation."}, {"t": "Optimization", "l": "Creative, audiences, bids, budget", "say": "Now we optimize. Which ads, audiences and platforms bring in leads that actually turn into sales conversations? We shift budget toward those, refresh the creative that's getting tired, and cut what isn't pulling its weight. Not just cheaper leads. Better leads."}, {"t": "Reporting", "l": "From ad click to pipeline", "say": "Then we report on what matters. Claude pulls your ad platform and CRM data into reports that show the full path, from click to CRM to pipeline, broken down by ebook. Then I review every report myself, add my insights on what the numbers mean, and give you clear recommendations on what to do next. You don't just get data. You get direction."}, {"t": "Scale", "l": "More of what works", "say": "And finally, we scale. More budget behind the ebooks and audiences that convert. New ebooks where we see demand we haven't met yet. And every step we just walked through keeps running, connected, from the first click all the way to revenue."}], "close": {"card": "Twenty steps. One connected program.", "say": "That's the whole program. Twenty steps, every one connected to the next, with Claude and my AI tools working inside each one and my experience guiding how they're used. Paid media doesn't end when a lead comes in. It ends when that lead becomes revenue. And remember, this was a sample. Your program is built around the plan we agree on. I manage this entire process, or I work alongside your marketing and sales teams to fill whatever gaps you have. Got a question about any step? Just ask me. Or book a time with me below."}}, "gtm": {"label": "GTM Outbound", "title": "GTM Outbound", "sub": "20 steps from first signal to sales conversation", "photos": ["gtm-1.jpg", "gtm-2.jpg"], "intro": {"card": "GTM Outbound — 20 steps from first signal to sales conversation", "say": "Hi, I'm Paul Mosenson, founder of NuSpark Marketing. Most cold outreach fails for one simple reason. It's sent to the wrong people, at the wrong time, with a message that could have gone to anyone. I'm going to walk you through every step of an outbound program the way I run it: built on buying signals and intent, decades of experience, and Claude and the AI tools I've built working inside every step. Twenty steps. This is a sample program, and every step gets adjusted to the plan we agree on together. Click next whenever you're ready."}, "steps": [{"t": "Plan approved", "l": "Who, what offer, what success looks like", "say": "Everything starts with an approved plan. We agree on your ideal customer, the offers we'll lead with, the goals and KPIs, and how much outreach we'll run each month. A clear plan keeps every step that follows pointed at the same target."}, {"t": "Sales alignment", "l": "What counts as a sales-ready lead", "say": "Before anything goes out, I sit down with your sales team. What makes a prospect worth their time? What score should send a lead their way? How fast will they follow up? We agree on the rules first, so when a lead is ready, everyone already knows what happens next."}, {"t": "Website audit", "l": "Conversion, proof and trust", "say": "Every good outreach message sends people to your website. And that's where they decide whether to believe you. With Claude and my AI tools, we audit your key pages for conversion, proof and trust: clear offers, case studies, testimonials, and easy next steps. Then we fix what's holding it back, so the clicks we earn don't go to waste."}, {"t": "Sending and tracking setup", "l": "Protect your domain, measure everything", "say": "Now the technical foundation. We set up separate sending domains, so your main company domain stays protected. Every domain gets properly authenticated, unsubscribe handling is in place, and every inbox is warmed up before real volume goes out. We also tag every link and set up the lead database, so we can see where each prospect came from and what they've done. Skip this, and your emails land in spam and you can't tell what's working."}, {"t": "LinkedIn strategy and setup", "l": "Profiles, messages, automation", "say": "LinkedIn supports the email outreach, and it gets the same care. We start with an assessment of your current LinkedIn presence, then optimize the profiles doing the outreach so they earn the accept. We set the message strategy and the automation strategy, so outreach stays personal and runs at a steady, safe pace. And my AI tools help write the connection requests and follow-up messages."}, {"t": "Website visitor identification", "l": "Turn traffic into accounts", "say": "This one is a key piece of the whole system. Most of your website visitors never fill out a form, so you never know they were there. Visitor identification shows you which companies are visiting, which pages they view, and how often they come back. Anonymous traffic becomes a list of accounts worth pursuing. And it works even if you never send a single cold email."}, {"t": "Company signals", "l": "Who's changing, growing or investing", "say": "Now we find the right companies. Not just companies that fit, but companies showing signs they may be ready to buy. Funding, hiring, growth, leadership changes, visits to your website. My AI signal tools evaluate each one for fit and reliability, so we focus on the accounts that deserve attention, not just the ones on a list."}, {"t": "Keyword and topic intent", "l": "Who's researching right now", "say": "Company signals tell us who's changing. Intent tells us who's researching. We identify companies actively looking into the topics and problems you solve. That means we can reach them while they're already thinking about it, often before they've ever raised a hand or talked to a competitor."}, {"t": "List build and verification", "l": "The right people, real addresses", "say": "Then we find the right decision makers at those signal and intent companies, pulling from multiple data sources so we're not relying on just one. Every email address gets double-checked before anything is sent. Bad data means bounces, and bounces damage your domains. Clean lists protect everything we just built."}, {"t": "Trade show lead capture", "l": "Event leads, put to work", "say": "If you're at trade shows and events, those contacts come into the same process. Booth leads are captured on the spot and pulled right into research, messaging and scoring, instead of sitting in a spreadsheet for weeks. Event leads have a short shelf life, so speed matters here more than anywhere else."}, {"t": "Account research", "l": "A real reason to reach out", "say": "Before we write a word, Claude researches each account. What's happening at the company, what they likely need, and why now. Then my AI tools turn that research into a credible reason to reach out. That's the difference between a message that gets deleted and one that gets read."}, {"t": "Ungated guide library", "l": "Trust before the ask", "say": "Here's where we're different. Most cold outreach asks for a meeting in the first email. We lead with value instead. We build a library of guides, each written for a specific audience and the problem they're facing, and we share them freely. No form, no gate. When you help first, people remember who helped them."}, {"t": "Segment outreach workflows", "l": "Built for each audience", "say": "Now we build the outreach itself, one workflow for each segment. Each segment gets its own sequence, its own guide, and its own landing page that matches what the message promised. Different audiences have different problems, so they get different outreach."}, {"t": "Custom messaging", "l": "Built with my AI Growth Accelerator, managed by me", "say": "Then the messages, and this is where my AI Growth Accelerator comes in. These are AI tools I've built over years of writing outreach that works. They customize every message by target: the subject line, the opening, the tone, the style, the proof, even the language of their industry. Then we build variations and test them right inside the workflow, so we learn what each audience actually responds to. And I manage every step of it. AI brings the speed and the variety. I make sure it never reads like AI wrote it."}, {"t": "QA and launch", "l": "Tested, then live", "say": "Before launch, we test everything. Test sends, every link, every landing page, and every piece of tracking, end to end. One broken link can quietly waste a whole campaign. Once it all checks out, outreach goes live."}, {"t": "Engagement scoring", "l": "Quiet interest, measured", "say": "Most interested prospects don't reply right away. They click, they download a guide, they come back to your website. So every prospect gets a score, starting with how well they fit your ideal customer, then rising with every action they take. The score tells us who's warming up, even when they haven't said a word."}, {"t": "Nurture", "l": "Engaged, but not ready yet", "say": "Some prospects engage but aren't ready for sales yet, based on the scoring decisions we agreed on back in step two. They don't get dropped. They move into nurture: more helpful content like guides and on-demand webinars, mixed with bottom-funnel offers like an assessment or a consultation. So when they are ready, the next step is right in front of them."}, {"t": "Hand-off to sales", "l": "Notified, with full context", "say": "When a prospect hits the score we agreed on, or replies with interest, the lead moves into your CRM and sales gets notified right away. And they get the full story: which signal brought them in, what they engaged with, and what they care about. Your team walks into the first conversation already knowing the problem."}, {"t": "Reporting and optimization", "l": "Data plus direction", "say": "Then we track what matters: deliverability, engagement and pipeline. Claude pulls it all into clear reports. I review every one myself, add my insights on what the numbers mean, and give you recommendations on what to do next. Messages and offers keep getting tested, so the program keeps getting sharper."}, {"t": "Scale", "l": "More of what works", "say": "And finally, we scale. More volume behind the signals, intent topics, segments, messages and offers that are working. And every step we just walked through keeps running, connected, from the first signal all the way to a sales conversation."}], "close": {"card": "Twenty steps. One connected program.", "say": "That's the whole program. Twenty steps, every one connected to the next, with Claude and my AI tools working inside each one and my experience guiding how they're used. Cold outreach doesn't have to be cold. When it's built on real signals, real intent and real value, it starts conversations people actually want to have. And remember, this was a sample. Your program is built around the plan we agree on. I manage this entire process, or I work alongside your marketing and sales teams to fill whatever gaps you have. Got a question about any step? Just ask me. Or book a time with me below."}}};
+let path = 'paid', idx = 0; // 0 = intro, 1..20 = steps, 21 = close
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+let userStarted = false;
+
+function clip(p,i){ return `${p}-${String(i).padStart(2,'0')}.mp3`; }
+
+function buildRail(){
+  const r = $('rail'); r.innerHTML = '';
+  DATA[path].steps.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className='node'; b.id=`node-${i+1}`; b.title=`Step ${i+1}: ${s.t}`; b.setAttribute('aria-label',`Go to step ${i+1}: ${s.t}`);
+    b.onclick=()=>go(i+1,true);
+    r.appendChild(b);
+  });
+}
+
+function render(){
+  const d = DATA[path];
+  $('title').textContent = d.title;
+  let kicker, title, line, say;
+  if(idx===0){ kicker='Introduction'; title=d.intro.card; line=d.sub; say=d.intro.say; }
+  else if(idx===21){ kicker='Wrap-up'; title=d.close.card; line='Questions about any step? Ask, or book time with Paul.'; say=d.close.say; }
+  else { const s=d.steps[idx-1]; kicker=`Step ${idx} of 20`; title=s.t; line=s.l; say=s.say; }
+  $('kicker').textContent=kicker; $('stepTitle').textContent=title; $('stepLine').textContent=line; $('say').textContent=say;
+
+  const left = idx===0 ? 20 : idx>=20 ? 0 : 20-idx;
+  $('num').textContent = idx===21 ? '✓' : left;
+  $('numlbl').textContent = idx===0 ? 'steps ahead' : idx===21 ? 'program complete' : left===0 ? 'final step' : left===1 ? 'step to go' : 'steps to go';
+  $('railmid').textContent = idx===0 ? '' : idx===21 ? 'All 20 connected' : `${left} to go`;
+
+  const img = d.photos[idx>=11 ? 1 : 0];
+  if(!$('photo').src.endsWith(img)) $('photo').src = img;
+
+  d.steps.forEach((_,i)=>{ const n=$(`node-${i+1}`); n.className='node'+(i+1<idx||idx===21?' done':'')+(i+1===idx?' now':''); });
+
+  $('back').disabled = idx===0;
+  $('next').hidden = idx===21;
+  $('next').textContent = idx===0 ? 'Start →' : idx===20 ? 'Wrap up →' : 'Next →';
+  $('cta').hidden = idx!==21;
+  $('audioNote').hidden = true;
+}
+
+function playClip(){
+  audio.src = clip(path,idx);
+  audio.play().then(()=>{}).catch(()=>{});
+}
+function go(i,auto){
+  idx = Math.max(0,Math.min(21,i));
+  render();
+  if(auto && userStarted) playClip(); else { audio.pause(); setPlay(false); }
+}
+function setPlay(on){
+  $('play').textContent = on ? '❚❚ Pause' : '▶ Play';
+  $('studio').classList.toggle('speaking',on);
+  $('livelbl').textContent = on ? 'Speaking' : 'AI Paul';
+}
+audio.addEventListener('play',()=>setPlay(true));
+audio.addEventListener('pause',()=>setPlay(false));
+audio.addEventListener('ended',()=>setPlay(false));
+audio.addEventListener('error',()=>{ setPlay(false); if(audio.getAttribute('src')){ $('audioNote').hidden=false; $('readalong').open=true; } });
+
+$('next').onclick=()=>{ userStarted=true; go(idx+1,true); };
+$('back').onclick=()=>{ go(idx-1,userStarted); };
+$('play').onclick=()=>{
+  userStarted=true;
+  if(!audio.paused){ audio.pause(); return; }
+  if(audio.getAttribute('src')===clip(path,idx) && audio.currentTime>0 && !audio.ended) audio.play().catch(()=>{});
+  else playClip();
+};
+document.querySelectorAll('.paths button').forEach(b=>b.onclick=()=>{
+  path=b.dataset.path;
+  document.querySelectorAll('.paths button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+  audio.pause(); audio.removeAttribute('src'); buildRail(); go(0,false);
+});
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('summary,a')) return;
+  if(e.key==='ArrowRight'){ userStarted=true; if(idx<21) go(idx+1,true); }
+  else if(e.key==='ArrowLeft'){ go(idx-1,userStarted); }
+  else if(e.key===' ' && !e.target.closest('button')){ e.preventDefault(); $('play').click(); }
+});
+buildRail(); render();
+</script>
+
+</body>
+</html>
