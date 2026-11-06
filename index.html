@@ -25,7 +25,7 @@
   --spark:#F07A45; --spark-soft:#3A2418; --done:#5CC3A4; --done-soft:#173129; color-scheme:dark}
 
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 40px}
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 8px}
 .wrap{max-width:980px;margin:0 auto;display:grid;gap:18px}
 
 header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:14px}
@@ -228,5 +228,15 @@ document.addEventListener('keydown',e=>{
 buildRail(); render();
 </script>
 
+
+<script>
+(function(){
+  function send(){ try{ var h=Math.ceil(document.querySelector('.wrap').getBoundingClientRect().bottom + window.scrollY + 24); parent.postMessage({aiPaulHeight:h},'*'); }catch(e){} }
+  try{ new ResizeObserver(send).observe(document.querySelector('.wrap')); }catch(e){}
+  window.addEventListener('load',send); window.addEventListener('resize',send);
+  document.addEventListener('click',function(){ setTimeout(send,50); });
+  send();
+})();
+</script>
 </body>
 </html>
